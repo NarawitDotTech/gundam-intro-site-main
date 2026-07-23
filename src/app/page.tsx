@@ -70,7 +70,7 @@ export default function Home() {
               <h1 className="mt-6 text-[clamp(2.6rem,6.5vw,4.6rem)] leading-[1.04] font-black tracking-tight text-zinc-50">
                 Hi, I’m Gundam.
                 <br />
-                <span className="text-zinc-400">I’m a </span>
+                <span className="text-zinc-400">I’m </span>
                 <TypingText
                   words={roles}
                   className="inline-flex min-w-[7.5ch] items-baseline text-left text-accent-300"
