@@ -1,7 +1,5 @@
 import type { Project } from "@/lib/projects";
 
-export const roles = ["Designer", "Engineer", "Developer", "Creator"];
-
 export const introText =
   "I design clear digital experiences and build modern web products with a strong focus on usability, brand consistency, and clean code.";
 
@@ -29,13 +27,11 @@ export const socialLinks: SocialLink[] = [
   },
 ];
 
-export const marqueeItems = [
-  "UI/UX Design",
-  "Web Development",
-  "Brand Systems",
-  "React & Next.js",
-  "TypeScript",
-  "Motion & Interaction",
+export const focusAreas = [
+  { label: "Design", value: "UI/UX, brand systems" },
+  { label: "Build", value: "Web development, motion and interaction" },
+  { label: "Stack", value: "React, Next.js, TypeScript" },
+  { label: "Elsewhere", value: "GitHub @NarawitDotTech" },
 ];
 
 export const progressPresets = [
