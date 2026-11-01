@@ -30,12 +30,16 @@ export function CursorTrail() {
     const points: Point[] = [];
     const pos = { x: -100, y: -100 };
     let raf = 0;
-    let dpr = 1;
+    const size = { width: 0, height: 0 };
 
+    // Size the canvas to its displayed box (excludes the scrollbar), not
+    // window.innerWidth, so canvas pixels line up 1:1 with pointer coordinates.
     const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      size.width = canvas.clientWidth;
+      size.height = canvas.clientHeight;
+      canvas.width = Math.round(size.width * dpr);
+      canvas.height = Math.round(size.height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
@@ -59,7 +63,7 @@ export function CursorTrail() {
       const now = performance.now();
       while (points.length && now - points[0].t > TRAIL_MS) points.shift();
 
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      ctx.clearRect(0, 0, size.width, size.height);
       const color = getComputedStyle(document.documentElement).getPropertyValue("--signal").trim();
       ctx.strokeStyle = color || "#c22d18";
       ctx.lineCap = "round";
