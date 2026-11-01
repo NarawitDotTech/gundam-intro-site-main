@@ -63,13 +63,13 @@ body {
 /* ---------- Reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  html {
+  html:not([data-motion="force"]) {
     scroll-behavior: auto;
   }
 
-  *,
-  *::before,
-  *::after {
+  html:not([data-motion="force"]) *,
+  html:not([data-motion="force"]) *::before,
+  html:not([data-motion="force"]) *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -223,18 +223,17 @@ html.has-custom-cursor :is(input, textarea, select) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .name-letter,
-  .status-blink {
+  html:not([data-motion="force"]) :is(.name-letter, .status-blink) {
     animation: none;
   }
 
-  [data-animate] {
+  html:not([data-motion="force"]) [data-animate] {
     opacity: 1 !important;
     translate: none !important;
     transition: none !important;
   }
 
-  [data-animate="rule"] {
+  html:not([data-motion="force"]) [data-animate="rule"] {
     background-size: 100% 1px !important;
   }
 }

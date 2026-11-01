@@ -31,7 +31,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Apply the saved "animations on" choice before first paint (see MotionPrompt). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{if(localStorage.getItem("motion-preference")==="on")document.documentElement.dataset.motion="force"}catch(e){}',
+          }}
+        />
+      </head>
       <body className={`${archivo.variable} ${plexMono.variable} antialiased`}>
         {children}
       </body>

@@ -18,7 +18,9 @@ export function CursorTrail() {
 
   useEffect(() => {
     const finePointer = window.matchMedia("(pointer: fine)").matches;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion =
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+      document.documentElement.dataset.motion !== "force";
     const canvas = canvasRef.current;
     const cursor = cursorRef.current;
     const ctx = canvas?.getContext("2d");

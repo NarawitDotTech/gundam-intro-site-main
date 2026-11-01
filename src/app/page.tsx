@@ -1,5 +1,6 @@
 import { ArrowUpRightIcon } from "@/components/icons";
 import { CursorTrail } from "@/components/cursor-trail";
+import { MotionPrompt } from "@/components/motion-prompt";
 import { ProjectsSection } from "@/components/projects-section";
 import { SiteFooter } from "@/components/site-footer";
 import { ScrollReveal } from "@/components/scroll-reveal";
@@ -26,6 +27,7 @@ export default function Home() {
     <>
       <CursorTrail />
       <ScrollReveal />
+      <MotionPrompt />
       <SiteHeader />
 
       <main className="mx-auto w-full max-w-[1120px] px-5 sm:px-8">
