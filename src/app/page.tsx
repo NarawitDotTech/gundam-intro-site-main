@@ -1,5 +1,6 @@
 import { ArrowUpRightIcon } from "@/components/icons";
 import { CursorTrail } from "@/components/cursor-trail";
+import { GridBackground } from "@/components/grid-background";
 import { MotionPrompt } from "@/components/motion-prompt";
 import { ProjectsSection } from "@/components/projects-section";
 import { SiteFooter } from "@/components/site-footer";
@@ -25,6 +26,8 @@ const label = "font-mono text-xs tracking-[0.16em] text-muted uppercase";
 export default function Home() {
   return (
     <>
+      <span id="top" />
+      <GridBackground />
       <CursorTrail />
       <ScrollReveal />
       <MotionPrompt />
@@ -34,7 +37,7 @@ export default function Home() {
         {/* Hero */}
         <section className="grid gap-12 border-b border-rule pt-16 pb-16 sm:pt-24 sm:pb-24 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           <div>
-            <p className={label}>Designer &amp; engineer</p>
+            <p className={label}>Engineer</p>
             <h1 className="font-wide mt-6 text-[clamp(2.75rem,7vw,5.5rem)] leading-[0.95] font-extrabold tracking-[-0.02em] text-ink">
               <span className="sr-only">Narawit Aunsaen</span>
               <AnimatedName lines={["Narawit", "Aunsaen"]} />

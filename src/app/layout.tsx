@@ -14,7 +14,7 @@ const plexMono = IBM_Plex_Mono({
   weight: ["400", "500"],
 });
 
-const title = "Narawit “Gundam” Aunsaen: designer and engineer";
+const title = "Narawit “Gundam” Aunsaen: engineer";
 const description =
   "I design clear digital experiences and build modern web products with a focus on usability, brand consistency, and clean code.";
 
