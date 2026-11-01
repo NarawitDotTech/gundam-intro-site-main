@@ -240,11 +240,17 @@ html.has-custom-cursor :is(input, textarea, select) {
 
 /* ---------- Background grid with hover glow ---------- */
 
+/* Covers the top of the page only and fades out toward the bottom */
 .grid-bg {
   pointer-events: none;
-  position: fixed;
-  inset: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: min(1100px, 130svh);
   z-index: -1;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 100%);
 }
 
 .grid-bg-lines,
@@ -275,14 +281,4 @@ html.has-custom-cursor :is(input, textarea, select) {
 
 .grid-bg-glow[data-active="true"] {
   opacity: 0.85;
-}
-
-/* ---------- Header auto-hide ---------- */
-
-.site-header {
-  transition: translate 350ms cubic-bezier(0.2, 0.9, 0.1, 1);
-}
-
-.site-header[data-hidden="true"] {
-  translate: 0 -100%;
 }

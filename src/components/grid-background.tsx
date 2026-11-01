@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Faint drafting grid behind the page. Near the mouse, a copy of the grid
+ * Faint drafting grid behind the top of the page that fades out downward. Near the mouse, a copy of the grid
  * in the signal color shows through a soft radial mask, so the lines glow
  * where you hover. The glow is mouse/trackpad only and respects reduced motion.
  */
@@ -31,24 +31,34 @@ export function GridBackground() {
       raf = requestAnimationFrame(tick);
     };
 
+    const pointer = { x: -1000, y: -1000 };
+    const aim = () => {
+      // The grid scrolls with the page, so convert to page coordinates.
+      target.x = pointer.x;
+      target.y = pointer.y + window.scrollY;
+    };
     const onMove = (event: PointerEvent) => {
-      if (target.x === -1000) {
-        pos.x = event.clientX;
-        pos.y = event.clientY;
+      const first = pointer.x === -1000;
+      pointer.x = event.clientX;
+      pointer.y = event.clientY;
+      aim();
+      if (first) {
+        pos.x = target.x;
+        pos.y = target.y;
       }
-      target.x = event.clientX;
-      target.y = event.clientY;
       glow.dataset.active = "true";
     };
     const onLeave = () => (glow.dataset.active = "false");
 
     window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("scroll", aim, { passive: true });
     document.addEventListener("pointerleave", onLeave);
     raf = requestAnimationFrame(tick);
 
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("scroll", aim);
       document.removeEventListener("pointerleave", onLeave);
     };
   }, []);
