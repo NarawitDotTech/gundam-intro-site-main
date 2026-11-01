@@ -6,8 +6,6 @@ export type Project = {
   isCurrent: boolean;
 };
 
-export const ADMIN_CODE = "252525";
-
 export const defaultProjects: Project[] = [
   {
     id: "project-1",
@@ -88,19 +86,45 @@ export async function fetchProjects(): Promise<Project[]> {
   }
 }
 
-export async function updateProjects(projects: Project[]): Promise<boolean> {
+type ApiResult = { ok: true } | { ok: false; error: string };
+
+async function readError(response: Response, fallback: string): Promise<string> {
+  try {
+    const data = (await response.json()) as { error?: unknown };
+    return typeof data.error === "string" ? data.error : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+/** Check the admin passcode on the server. */
+export async function verifyPasscode(passcode: string): Promise<ApiResult> {
+  try {
+    const response = await fetch("/api/admin/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ passcode }),
+    });
+    return response.ok
+      ? { ok: true }
+      : { ok: false, error: await readError(response, "Couldn’t check the passcode.") };
+  } catch {
+    return { ok: false, error: "Can’t reach the server. Check your connection." };
+  }
+}
+
+export async function updateProjects(projects: Project[], passcode: string): Promise<ApiResult> {
   try {
     const response = await fetch("/api/projects", {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json", "x-admin-passcode": passcode },
       body: JSON.stringify({ projects }),
     });
-
-    return response.ok;
+    return response.ok
+      ? { ok: true }
+      : { ok: false, error: await readError(response, "Save failed.") };
   } catch {
-    return false;
+    return { ok: false, error: "Can’t reach the server. Check your connection." };
   }
 }
 

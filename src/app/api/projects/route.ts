@@ -1,39 +1,39 @@
-import { promises as fs } from "node:fs";
-import path from "node:path";
 import { NextResponse } from "next/server";
-import { defaultProjects, normalizeProjects } from "@/lib/projects";
+import { checkPasscode, PASSCODE_HEADER, passcodeErrors } from "@/lib/server/auth";
+import { loadProjects, saveProjects, StorageUnavailableError } from "@/lib/server/storage";
 
-const DATA_FILE_PATH = path.join(process.cwd(), "data", "projects.json");
+export const dynamic = "force-dynamic";
 
-async function readProjectsFromFile() {
+const noStore = { "Cache-Control": "no-store" };
+
+export async function GET() {
   try {
-    const raw = await fs.readFile(DATA_FILE_PATH, "utf-8");
-    return normalizeProjects(JSON.parse(raw));
+    return NextResponse.json({ projects: await loadProjects() }, { headers: noStore });
   } catch {
-    const fallback = normalizeProjects(defaultProjects);
-    await writeProjectsToFile(fallback);
-    return fallback;
+    return NextResponse.json({ error: "Couldn’t read projects." }, { status: 500, headers: noStore });
   }
 }
 
-async function writeProjectsToFile(projects: unknown) {
-  const normalized = normalizeProjects(projects);
-  await fs.mkdir(path.dirname(DATA_FILE_PATH), { recursive: true });
-  await fs.writeFile(DATA_FILE_PATH, JSON.stringify(normalized, null, 2), "utf-8");
-  return normalized;
-}
-
-export async function GET() {
-  const projects = await readProjectsFromFile();
-  return NextResponse.json({ projects }, { headers: { "Cache-Control": "no-store" } });
-}
-
 export async function PUT(request: Request) {
+  const auth = checkPasscode(request.headers.get(PASSCODE_HEADER));
+  if (auth !== "ok") {
+    const { status, error } = passcodeErrors[auth];
+    return NextResponse.json({ error }, { status, headers: noStore });
+  }
+
+  let body: { projects?: unknown };
   try {
-    const body = (await request.json()) as { projects?: unknown };
-    const projects = await writeProjectsToFile(body.projects);
-    return NextResponse.json({ projects });
+    body = (await request.json()) as { projects?: unknown };
   } catch {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400, headers: noStore });
+  }
+
+  try {
+    const projects = await saveProjects(body.projects);
+    return NextResponse.json({ projects }, { headers: noStore });
+  } catch (error) {
+    const message =
+      error instanceof StorageUnavailableError ? error.message : "Couldn’t save projects.";
+    return NextResponse.json({ error: message }, { status: 503, headers: noStore });
   }
 }

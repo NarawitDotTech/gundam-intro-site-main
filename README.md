@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Gundam intro site
 
-## Getting Started
+Personal site for Narawit "Gundam" Aunsaen, built with Next.js and deployed to Cloudflare Workers.
+The design system is described in `DESIGN.md`.
 
-First, run the development server:
+## Run locally
 
 ```bash
+npm install
+echo "ADMIN_PASSCODE=choose-a-passcode" > .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The site runs at http://localhost:3000 and the editor at http://localhost:3000/admin.
+Locally, projects are saved to `data/projects.json`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Cloudflare setup (one time)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The admin editor needs two things on the Worker `gundam-intro-site-main`:
 
-## Learn More
+1. **Passcode secret.** Workers → gundam-intro-site-main → Settings → Variables and Secrets →
+   add a **Secret** named `ADMIN_PASSCODE`.
+2. **Storage.** Storage & Databases → KV → create a namespace (for example `gundam-projects`).
+   Then Workers → gundam-intro-site-main → Settings → Bindings → add a **KV namespace** binding
+   with the variable name `PROJECTS` pointing to it.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Without the binding, the site still shows the projects from `data/projects.json`,
+but saving in the admin editor shows a message explaining what's missing.

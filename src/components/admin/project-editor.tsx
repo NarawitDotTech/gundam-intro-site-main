@@ -1,167 +1,131 @@
 "use client";
 
-import { CheckIcon, TrashIcon } from "@/components/icons";
 import type { Project } from "@/lib/projects";
-import { formatProjectIndex, getProgressTone, progressPresets } from "@/lib/site";
+import { formatProjectIndex, progressPresets } from "@/lib/site";
 
-const inputClass =
-  "w-full rounded-lg border border-white/10 bg-ink-950/70 px-3.5 py-2.5 text-sm text-zinc-100 outline-none transition-all placeholder:text-zinc-600 focus:border-accent-400/60 focus:ring-2 focus:ring-accent-400/15";
+export const fieldLabel = "mb-2 block font-mono text-xs tracking-[0.16em] text-muted uppercase";
+export const inputClass =
+  "w-full border border-rule bg-paper px-3 py-2.5 text-[15px] text-ink outline-none transition-colors duration-150 placeholder:text-muted/70 hover:border-muted focus:border-ink";
 
 type ProjectEditorProps = {
   project: Project;
   index: number;
-  isCurrent: boolean;
   deleteArmed: boolean;
-  onUpdate: (id: string, field: keyof Project, value: string) => void;
+  onUpdate: (id: string, field: "name" | "progress" | "description", value: string) => void;
   onSetCurrent: (id: string) => void;
-  onArmDelete: (id: string) => void;
+  onArmDelete: (id: string | null) => void;
   onDelete: (id: string) => void;
 };
 
-/** Editable card for a single project inside the admin dashboard. */
+/** One project as a ruled row of form fields. */
 export function ProjectEditor({
   project,
   index,
-  isCurrent,
   deleteArmed,
   onUpdate,
   onSetCurrent,
   onArmDelete,
   onDelete,
 }: ProjectEditorProps) {
-  const tone = getProgressTone(project.progress);
+  const id = project.id;
 
   return (
-    <article
-      id={`project-card-${project.id}`}
-      aria-label={`Project ${formatProjectIndex(index)}: ${project.name}`}
-      className={`scroll-mt-32 rounded-2xl border bg-ink-900/70 backdrop-blur-sm transition-colors ${
-        isCurrent
-          ? "border-accent-400/35 shadow-[0_0_0_1px_rgba(79,224,200,0.12),0_20px_50px_-24px_rgba(0,0,0,0.7)]"
-          : "border-white/10"
-      }`}
+    <li
+      id={`project-row-${id}`}
+      className="grid scroll-mt-24 gap-x-8 gap-y-5 border-b border-rule py-8 sm:grid-cols-[4rem_1fr]"
     >
-      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-white/5 px-5 py-3.5">
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-xs tracking-[0.22em] text-zinc-500 uppercase">
-            Project {formatProjectIndex(index)}
-          </span>
-          <span
-            className={`hidden items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[10px] tracking-[0.16em] uppercase sm:inline-flex ${tone.chip}`}
-          >
-            <span className={`h-1 w-1 rounded-full ${tone.dot}`} />
-            {project.progress || "No status"}
-          </span>
-        </div>
+      <div className="flex items-center justify-between sm:block">
+        <span className="font-mono text-sm text-muted">{formatProjectIndex(index)}</span>
+      </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => onSetCurrent(project.id)}
-            aria-pressed={isCurrent}
-            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
-              isCurrent
-                ? "border-accent-400/50 bg-accent-400/15 text-accent-200"
-                : "border-white/10 bg-white/5 text-zinc-400 hover:border-accent-400/40 hover:text-accent-200"
-            }`}
-          >
-            <span
-              className={`flex h-3.5 w-3.5 items-center justify-center rounded-full border ${
-                isCurrent ? "border-accent-300" : "border-zinc-500"
-              }`}
-            >
-              {isCurrent ? <span className="h-1.5 w-1.5 rounded-full bg-accent-300" /> : null}
-            </span>
-            {isCurrent ? "Current" : "Set current"}
-          </button>
+      <fieldset className="min-w-0 space-y-5">
+        <legend className="sr-only">Project {formatProjectIndex(index)}</legend>
 
-          <button
-            type="button"
-            onClick={() => (deleteArmed ? onDelete(project.id) : onArmDelete(project.id))}
-            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
-              deleteArmed
-                ? "border-rose-400/70 bg-rose-400/25 text-rose-100"
-                : "border-rose-300/20 bg-rose-300/5 text-rose-300/90 hover:border-rose-300/40 hover:bg-rose-300/15"
-            }`}
-          >
-            {deleteArmed ? <CheckIcon className="h-3.5 w-3.5" /> : <TrashIcon className="h-3.5 w-3.5" />}
-            {deleteArmed ? "Confirm?" : "Delete"}
-          </button>
-        </div>
-      </header>
-
-      <div className="space-y-4 px-5 py-5">
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label
-              htmlFor={`project-name-${project.id}`}
-              className="mb-1.5 block font-mono text-[10px] tracking-[0.22em] text-zinc-500 uppercase"
-            >
+            <label htmlFor={`name-${id}`} className={fieldLabel}>
               Name
             </label>
             <input
-              id={`project-name-${project.id}`}
+              id={`name-${id}`}
               value={project.name}
-              onChange={(event) => onUpdate(project.id, "name", event.target.value)}
-              placeholder="Project name"
-              className={inputClass}
+              onChange={(event) => onUpdate(id, "name", event.target.value)}
+              className={inputClass + " font-semibold"}
             />
           </div>
-
           <div>
-            <label
-              htmlFor={`project-progress-${project.id}`}
-              className="mb-1.5 block font-mono text-[10px] tracking-[0.22em] text-zinc-500 uppercase"
-            >
-              Progress
+            <label htmlFor={`progress-${id}`} className={fieldLabel}>
+              Status
             </label>
             <input
-              id={`project-progress-${project.id}`}
+              id={`progress-${id}`}
               value={project.progress}
-              onChange={(event) => onUpdate(project.id, "progress", event.target.value)}
-              placeholder="e.g. In Progress"
+              onChange={(event) => onUpdate(id, "progress", event.target.value)}
+              list={`progress-presets-${id}`}
               className={inputClass}
             />
+            <datalist id={`progress-presets-${id}`}>
+              {progressPresets.map((preset) => (
+                <option key={preset} value={preset} />
+              ))}
+            </datalist>
           </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="mr-1 font-mono text-[10px] tracking-[0.22em] text-zinc-600 uppercase">
-            Quick set:
-          </span>
-          {progressPresets.map((preset) => (
-            <button
-              key={preset}
-              type="button"
-              onClick={() => onUpdate(project.id, "progress", preset)}
-              className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all ${
-                project.progress === preset
-                  ? "border-accent-400/50 bg-accent-400/15 text-accent-200"
-                  : "border-white/10 bg-white/5 text-zinc-400 hover:border-white/25 hover:text-zinc-200"
-              }`}
-            >
-              {preset}
-            </button>
-          ))}
         </div>
 
         <div>
-          <label
-            htmlFor={`project-description-${project.id}`}
-            className="mb-1.5 block font-mono text-[10px] tracking-[0.22em] text-zinc-500 uppercase"
-          >
+          <label htmlFor={`description-${id}`} className={fieldLabel}>
             Description
           </label>
           <textarea
-            id={`project-description-${project.id}`}
+            id={`description-${id}`}
             value={project.description}
-            onChange={(event) => onUpdate(project.id, "description", event.target.value)}
+            onChange={(event) => onUpdate(id, "description", event.target.value)}
             rows={3}
-            placeholder="What is this project about?"
-            className={`${inputClass} resize-y leading-relaxed`}
+            className={inputClass + " resize-y leading-relaxed"}
           />
         </div>
-      </div>
-    </article>
+
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <label className="inline-flex cursor-pointer items-center gap-2.5 text-[15px] text-ink">
+            <input
+              type="radio"
+              name="current-project"
+              checked={project.isCurrent}
+              onChange={() => onSetCurrent(id)}
+              className="h-4 w-4 accent-[var(--signal)]"
+            />
+            Current project
+          </label>
+
+          {deleteArmed ? (
+            <span className="inline-flex items-center gap-3">
+              <span className="text-[15px] text-ink">Delete “{project.name || "Untitled"}”?</span>
+              <button
+                type="button"
+                onClick={() => onDelete(id)}
+                className="h-10 bg-signal px-4 text-[15px] font-semibold text-paper"
+              >
+                Delete
+              </button>
+              <button
+                type="button"
+                onClick={() => onArmDelete(null)}
+                className="h-10 px-2 text-[15px] text-muted underline underline-offset-4 hover:text-ink"
+              >
+                Keep
+              </button>
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={() => onArmDelete(id)}
+              className="h-10 text-[15px] text-muted underline decoration-rule underline-offset-4 transition-colors duration-150 hover:text-signal hover:decoration-signal"
+            >
+              Delete project
+            </button>
+          )}
+        </div>
+      </fieldset>
+    </li>
   );
 }
