@@ -21,7 +21,7 @@ export function ProjectsSection() {
 
   return (
     <section id="work" className="scroll-mt-20 py-16 sm:py-24">
-      <div className="flex items-baseline justify-between gap-4">
+      <div data-animate className="flex items-baseline justify-between gap-4">
         <h2 className="font-wide text-[32px] leading-tight font-extrabold tracking-[-0.01em] text-ink">
           Work
         </h2>
@@ -30,15 +30,17 @@ export function ProjectsSection() {
         </p>
       </div>
 
-      <ol className="mt-10 border-t border-ink">
+      <ol data-animate="rule" className="mt-10 border-t border-ink">
         {projects.map((project, index) => (
           <li
             key={project.id}
-            className="grid grid-cols-[2.5rem_1fr] gap-x-4 gap-y-3 border-b border-rule py-6 sm:grid-cols-[4rem_1fr_11rem] sm:gap-x-8"
+            data-animate
+            style={{ "--d": index + 1 } as React.CSSProperties}
+            className="group grid grid-cols-[2.5rem_1fr] gap-x-4 gap-y-3 border-b border-rule py-6 sm:grid-cols-[4rem_1fr_11rem] sm:gap-x-8"
           >
-            <span className="font-mono text-sm text-muted">{formatProjectIndex(index)}</span>
+            <span className="font-mono text-sm text-muted transition-colors duration-200 group-hover:text-signal">{formatProjectIndex(index)}</span>
             <div>
-              <h3 className="text-[22px] leading-snug font-bold text-ink">{project.name}</h3>
+              <h3 className="text-[22px] leading-snug font-bold text-ink transition-transform duration-300 group-hover:translate-x-2">{project.name}</h3>
               {project.description ? (
                 <p className="mt-2 max-w-[62ch] text-[15px] leading-relaxed text-muted">
                   {project.description}
@@ -48,7 +50,7 @@ export function ProjectsSection() {
             <p className="col-start-2 flex items-center gap-2 font-mono text-xs tracking-[0.12em] text-ink uppercase sm:col-start-3 sm:justify-end sm:pt-2">
               {project.isCurrent ? (
                 <>
-                  <span aria-hidden="true" className="h-2 w-2 bg-signal" />
+                  <span aria-hidden="true" className="status-blink h-2 w-2 bg-signal" />
                   <span className="sr-only">Current project, </span>
                 </>
               ) : null}

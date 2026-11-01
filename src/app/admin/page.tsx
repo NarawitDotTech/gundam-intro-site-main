@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { CursorTrail } from "@/components/cursor-trail";
 import { fieldLabel, inputClass, ProjectEditor } from "@/components/admin/project-editor";
 import {
   normalizeProjects,
@@ -30,10 +31,15 @@ function newProject(): Project {
 export default function AdminPage() {
   const [passcode, setPasscode] = useState<string | null>(null);
 
-  return passcode === null ? (
-    <LoginScreen onUnlock={setPasscode} />
-  ) : (
-    <Editor passcode={passcode} onLock={() => setPasscode(null)} />
+  return (
+    <>
+      <CursorTrail />
+      {passcode === null ? (
+        <LoginScreen onUnlock={setPasscode} />
+      ) : (
+        <Editor passcode={passcode} onLock={() => setPasscode(null)} />
+      )}
+    </>
   );
 }
 
