@@ -1,15 +1,36 @@
 @import "tailwindcss";
 
 :root {
-  --background: #05070c;
-  --foreground: #e8edf5;
+  --paper: #f2efe8;
+  --ink: #161514;
+  --muted: #5d5a54;
+  --rule: #d6d1c6;
+  --signal: #c22d18;
+  --background: var(--paper);
+  --foreground: var(--ink);
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #131312;
+    --ink: #ece9e2;
+    --muted: #a29e96;
+    --rule: #2f2e2b;
+    --signal: #ff6b4f;
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-rule: var(--rule);
+  --color-signal: var(--signal);
+  --font-sans: var(--font-archivo);
+  --font-mono: var(--font-plex-mono);
 }
 
 @theme {
@@ -30,8 +51,7 @@
 
   /* Motion tokens */
   --animate-cursor: cursor-blink 1.05s steps(1, end) infinite;
-  --animate-marquee: marquee 42s linear infinite;
-  --animate-scan: scan 4.5s ease-in-out infinite;
+    --animate-scan: scan 4.5s ease-in-out infinite;
   --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-spin-slow: spin 1s linear infinite;
   --animate-shake: shake 0.4s ease-in-out;
@@ -141,19 +161,26 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   text-rendering: optimizeLegibility;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+.font-wide {
+  font-stretch: 112%;
+}
+
 ::selection {
-  background: var(--color-accent-400);
-  color: var(--color-ink-950);
+  background: var(--signal);
+  color: var(--paper);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent-400);
-  outline-offset: 2px;
-  border-radius: 2px;
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
 }
 
 /* Slim, theme-matched scrollbar */
@@ -171,30 +198,6 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-ink-600);
-}
-
-/* ---------- Custom cursor ---------- */
-
-html.custom-cursor,
-html.custom-cursor * {
-  cursor: none !important;
-}
-
-/* ---------- Reveal on scroll ---------- */
-
-.reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity 0.7s cubic-bezier(0.21, 1.02, 0.73, 1),
-    transform 0.7s cubic-bezier(0.21, 1.02, 0.73, 1);
-  transition-delay: var(--reveal-delay, 0ms);
-  will-change: opacity, transform;
-}
-
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 /* ---------- Cursor spotlight ---------- */
@@ -222,42 +225,6 @@ html.custom-cursor * {
   opacity: 0.032;
 }
 
-/* ---------- Glow card sheen (mouse-tracked) ---------- */
-
-.sheen {
-  position: relative;
-}
-
-.sheen::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    260px circle at var(--mx, 50%) var(--my, 50%),
-    rgb(126 240 221 / 0.09),
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 0.35s ease;
-  pointer-events: none;
-}
-
-.sheen:hover::before,
-.sheen:focus-within::before {
-  opacity: 1;
-}
-
-/* ---------- Marquee ---------- */
-
-.marquee-track {
-  animation: var(--animate-marquee);
-}
-
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
-
 /* ---------- Reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -271,14 +238,5 @@ html.custom-cursor * {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-
-  .reveal {
-    opacity: 1;
-    transform: none;
-  }
-
-  .marquee-track {
-    animation: none;
   }
 }
